@@ -25,5 +25,14 @@ pipeline {
 				sh "docker push $DOCKER_IMAGE_NAME"
 			}
 		}
+        stage('Deploy to Cluster') {
+            steps {
+                kubernetesDeploy(
+                    kubeconfigId: 'kubeconfig',
+                    configs: 'vulnerableapp.yml',
+                    enableConfigSubstitution: true
+                )
+            }
+        }
     }
 }
