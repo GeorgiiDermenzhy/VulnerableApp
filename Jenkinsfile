@@ -5,6 +5,7 @@ pipeline {
     }
     environment {
         DOCKERHUB_CREDENTIALS = credentials('docker_hub_login')
+        DOCKER_IMAGE_NAME = 'georgeder/vulnerableapp:latest'
     }
     stages {
         stage('Build') {
@@ -15,13 +16,13 @@ pipeline {
         }
 		stage('Build Docker Image') {
 			steps {
-				sh './gradlew bootBuildImage --imageName=georgeder/vulnerableapp:latest'
+				sh "./gradlew bootBuildImage --imageName=$DOCKER_IMAGE_NAME"
 			}
 		}
 		stage('Push Docker Image') {
 			steps {
 				sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
-				sh 'docker push georgeder/vulnerableapp:latest' 
+				sh "docker push $DOCKER_IMAGE_NAME"
 			}
 		}
     }
