@@ -53,7 +53,7 @@ pipeline {
                 }
             }
             steps {
-                sh 'trivy image georgeder/vulnerableapp:latest'
+                sh 'trivy --no-progress image --scanners vuln georgeder/vulnerableapp:latest'
             }
         }
 		stage('Push Docker Image') {
