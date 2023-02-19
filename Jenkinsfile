@@ -4,6 +4,7 @@ pipeline {
         booleanParam(name: 'execute_SCA',defaultValue: false, description: 'Run SCA tests')
         booleanParam(name: 'execute_SAST',defaultValue: false, description: 'Run SAST tests')
         booleanParam(name: 'execute_DAST',defaultValue: false, description: 'Run DAST tests')
+        booleanParam(name: 'execute_Trivy',defaultValue: false, description: 'Scan Image with Trivy')
     }
     tools{
         gradle ('gradle 7.5.1')
@@ -45,6 +46,16 @@ pipeline {
 				sh "./gradlew bootBuildImage --imageName=$DOCKER_IMAGE_NAME"
 			}
 		}
+        stage('Image Scan: Trivy') {
+            when{
+                expression{
+                    params.execute_Trivy
+                }
+            }
+            steps {
+                sh 'trivy image georgeder/vulnerableapp:latest'
+            }
+        }
 		stage('Push Docker Image') {
 			steps {
 				sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
