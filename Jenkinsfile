@@ -70,8 +70,7 @@ pipeline {
                 }
             }
             steps{
-                sh 'sudo wget -P /tmp/vulnerableapp.yml https://raw.githubusercontent.com/GeorgiiDermenzhy/VulnerableApp/master/vulnerableapp.yml'
-                sh 'trivy config /tmp/vulnerableapp.yml'
+                sh 'trivy config --no-progress /var/lib/jenkins/workspace/VulnerableApp_eng/vulnerableapp.yml'
             }
         }
         stage('Deploy to Cluster') {
