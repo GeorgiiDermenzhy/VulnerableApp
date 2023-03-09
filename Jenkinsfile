@@ -4,7 +4,8 @@ pipeline {
         booleanParam(name: 'execute_SCA',defaultValue: false, description: 'Run SCA tests')
         booleanParam(name: 'execute_SAST',defaultValue: false, description: 'Run SAST tests')
         booleanParam(name: 'execute_DAST',defaultValue: false, description: 'Run DAST tests')
-        booleanParam(name: 'execute_Trivy',defaultValue: false, description: 'Scan Image with Trivy')
+        booleanParam(name: 'execute_Trivy_image',defaultValue: false, description: 'Scan Image with Trivy')
+        booleanParam(name: 'execute_Trivy_yaml',defaultValue: false, description: 'Scan YAML with Trivy')
     }
     tools{
         gradle ('gradle 7.5.1')
@@ -49,7 +50,7 @@ pipeline {
         stage('Image Scan: Trivy') {
             when{
                 expression{
-                    params.execute_Trivy
+                    params.execute_Trivy_image
                 }
             }
             steps {
@@ -62,6 +63,17 @@ pipeline {
 				sh "docker push $DOCKER_IMAGE_NAME"
 			}
 		}
+        stage('Scan YAML: Trivy'){
+            when{
+                expression{
+                    params.execute_Trivy_yaml
+                }
+            }
+            steps{
+                sh 'sudo wget -P /tmp/vulnerableapp.yml https://raw.githubusercontent.com/GeorgiiDermenzhy/VulnerableApp/master/vulnerableapp.yml'
+                sh 'trivy config /tmp/vulnerableapp.yml'
+            }
+        }
         stage('Deploy to Cluster') {
             steps {
                 kubernetesDeploy(
