@@ -44,7 +44,7 @@ pipeline {
         }
 		stage('Build Docker Image') {
 			steps {
-				sh "./gradlew bootBuildImage --imageName=$DOCKER_IMAGE_NAME"
+				sh "docker build -t $DOCKER_IMAGE_NAME ."
 			}
 		}
         stage('Image Scan: Trivy') {
