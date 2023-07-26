@@ -42,11 +42,11 @@ pipeline {
                 sh 'docker run --rm -v "${PWD}:/src" returntocorp/semgrep semgrep --config=auto'
             }
         }
-		stage('Build Docker Image') {
-			steps {
-				sh "docker build -t $DOCKER_IMAGE_NAME ."
-			}
+	stage('Build Docker Image') {
+		steps {
+			sh "docker build -t $DOCKER_IMAGE_NAME ."
 		}
+	}
         stage('Image Scan: Trivy') {
             when{
                 expression{
