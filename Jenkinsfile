@@ -89,7 +89,7 @@ pipeline {
                 }
             }
             steps{
-                sh 'docker run -v "${PWD}:/zap/wrk/:rw" -t owasp/zap2docker-weekly zap-baseline.py -t http://10.0.0.11:32000/VulnerableApp/ -j --auto'
+                sh 'docker run -v "$(pwd):/zap/wrk/:rw" --user root owasp/zap2docker-stable zap-full-scan.py -t http://10.0.0.11:32000/VulnerableApp/ -j -l WARN -I -a'
             }
         }
     }
